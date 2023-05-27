@@ -37,26 +37,27 @@ class FriendController {
                     case 'addFriend':
                         $this->_user_id2 = filter_input(INPUT_POST, 'user_id2');
                         $this->_modelFriend->add_friends($this->_user_id1, $this->_user_id2);
-                        header('Location: index.php?p=friends');
+                        header("Location: " . $_SERVER['HTTP_REFERER']);
                         break;
                     case 'acceptFriend':
                         $this->_user_id2 = filter_input(INPUT_POST, 'user_id2');
                         $this->_modelFriend->accept_friend($this->_user_id1, $this->_user_id2);
-                        header('Location: index.php?p=friends');
+                        header("Location: " . $_SERVER['HTTP_REFERER']);
                         break;
                     case 'blockFriend':
                         $this->_user_id2 = filter_input(INPUT_POST, 'user_id2');
                         $this->_modelFriend->block_friend($this->_user_id1, $this->_user_id2);
-                        header('Location: index.php?p=friends');
+                        header("Location: " . $_SERVER['HTTP_REFERER']);
                         break;
                     case 'unblockFriend':
                         $this->_user_id2 = filter_input(INPUT_POST, 'user_id2');
                         $this->_modelFriend->unblock_friend($this->_user_id1, $this->_user_id2);
+                        header("Location: " . $_SERVER['HTTP_REFERER']);
                         break;
                     case 'deleteFriend':
                         $this->_user_id2 = filter_input(INPUT_POST, 'user_id2');
                         $this->_modelFriend->delete_friend($this->_user_id1, $this->_user_id2);
-                        header('Location: index.php?p=friends');
+                        header("Location: " . $_SERVER['HTTP_REFERER']);
                         break;
                 }
                 break;
