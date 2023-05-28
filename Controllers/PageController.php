@@ -275,4 +275,16 @@ class PageController extends \Database\Database
         ]);
     }
 
+    public function modifyPageInfo(string $name, string $bio) {
+        $pageModifyQuery = $this->_pdo->prepare("
+            UPDATE pages SET page_name = :pageName, page_desc = :pageBio WHERE page_id = :pageId;
+        ");
+
+        $pageModifyQuery->execute([
+            ":pageId" => $this->pageId,
+            ":pageName" => $name,
+            ":pageBio" => $bio
+        ]);
+    }
+
 }

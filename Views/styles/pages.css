@@ -94,6 +94,8 @@ body {
 #postCards {
     display: flex;
     flex-flow: column;
+    width:100%;
+    padding: 16px 32px;
     gap: 32px;
     align-items: center;
     justify-content: flex-start;
@@ -144,3 +146,14 @@ input[type="file"] {
     padding: 16px;
 }
 
+#adminSettings {
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+}
+
+#adminSettings > div {
+    display: flex;
+    flex-flow: row;
+    gap: 16px;
+}
