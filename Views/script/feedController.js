@@ -83,7 +83,6 @@ window.addEventListener('resize', handleResizePost);
 
 handleResizePost();
 
-window.addEventListener('resize', handleResizeLogo);
 
 
 let burgerButton = document.getElementById('burgerMenu');
