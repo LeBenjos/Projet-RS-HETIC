@@ -1,22 +1,26 @@
 <?php
-require_once ('../Controllers/PageController.php');
+require_once('../Controllers/PageController.php');
 $pageController = new \Page\PageController();
-if(isset($_POST["searchInput"])) {
-    $redirect = "Location: "."http://localhost/projet-rs-hetic/public/index.php?p=search&filter=".$_POST["searchInput"];
+if (isset($_POST["searchInput"])) {
+    $redirect = "Location: " . "http://localhost/projet-rs-hetic/public/index.php?p=search&filter=" . $_POST["searchInput"];
     header($redirect);
 }
 
-if(isset($_POST["createPage"])) {
+if (isset($_POST["createPage"])) {
     $pageController->createPage($_POST["page_at"], $_POST["name"], $_POST["bio"], $_POST["niche"]);
 }
 
 ?>
+
 <head>
     <link rel="stylesheet" type="text/css" href="../Views/styles/header.css">
 </head>
-
+<button class="" id="burgerMenu"><img src='../Views/assets/icons/suite.png' /></button>
+<button class="hideCta" id="closeMenu"><img src='../Views/assets/icons/close.png' /></button>
 <header>
-    <a href="http://localhost/projet-rs-hetic/public/index.php?p=feed"><h1>Uni</h1></a>
+    <a id="logo" href="http://localhost/projet-rs-hetic/public/index.php?p=feed">
+        <h1>Uni</h1>
+    </a>
     <form class="inputSearch" method="post">
         <label>
             <img src="../Views/assets/icons/searchIcon.svg" alt="Icone de recherche">
@@ -25,11 +29,12 @@ if(isset($_POST["createPage"])) {
     </form>
     <nav class="headerNav">
         <button class="headerCTA" id="createCta">Create</button>
-        <img class="userPdp" src="../Views/assets/imgs/users/picture/<?="default_picture.jpg"?>" alt="Image de <?= $username ?? "anonyme" ?>">
+        <img class="userPdp" src="../Views/assets/imgs/users/picture/<?= "default_picture.jpg" ?>"
+            alt="Image de <?= $username ?? "anonyme" ?>">
     </nav>
 </header>
 <div id="modalContrainer" class="hide">
-    <div id="createModal" >
+    <div id="createModal">
         <h1>Create page Form</h1>
         <form method="post">
             <div>

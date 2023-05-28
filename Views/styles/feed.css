@@ -1,3 +1,14 @@
+:root {
+    --step--2: clamp(0.78rem, calc(0.70rem + 0.38vw), 1.32rem);
+    --step--1: clamp(0.94rem, calc(0.84rem + 0.51vw), 1.65rem);
+    --step-0: clamp(1.13rem, calc(0.99rem + 0.67vw), 2.06rem);
+    --step-1: clamp(1.35rem, calc(1.17rem + 0.88vw), 2.58rem);
+    --step-2: clamp(1.62rem, calc(1.39rem + 1.14vw), 3.22rem);
+    --step-3: clamp(1.94rem, calc(1.65rem + 1.49vw), 4.03rem);
+    --step-4: clamp(2.33rem, calc(1.95rem + 1.93vw), 5.04rem);
+    --step-5: clamp(2.80rem, calc(2.30rem + 2.50vw), 6.29rem);
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
 
 * {
@@ -22,11 +33,9 @@ body {
 .postCard {
     background-color: white;
     border-radius: 25px;
-    width: 100%;
-    max-width: 820px;
+    width: max(300px, 100%);
     padding: 16px 32px;
-    font-size: 24px;
-
+    font-size: var(--step-0)
 }
 
 .cardHeader {
@@ -84,11 +93,14 @@ input[name="postContent"] {
 
 button[name="postPost"],
 .mediaInput {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: #39E168;
     border-radius: 50px;
     border: none;
     padding: 16px 32px;
-    font-size: 1rem;
+    font-size: var(--step-0);
     cursor: pointer
 }
 
@@ -185,7 +197,7 @@ input[type="file"] {
     border-radius: 50px;
     border: none;
     padding: 0.4vw 1vw;
-    font-size: 1rem;
+    font-size: var(--step-0);
     cursor: pointer
 }
 
@@ -200,7 +212,7 @@ input[type="file"] {
 }
 
 .reactionList {
-    width: 14vw;
+    width: max(50%, 40%);
     border-radius: 2vw;
     background: #FFFF;
     box-shadow: 5px 5px 10px #dedede;
@@ -208,12 +220,14 @@ input[type="file"] {
 }
 
 .reactionContent {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
 
-    font-size: 1rem;
-    padding: 4%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    font-size: var(--step-0);
+    padding-right: 10%;
 
     border: none;
 
@@ -224,4 +238,127 @@ input[type="file"] {
 
 .reactionEmoji {
     width: 2vw;
+    justify-self: center;
+
+}
+
+#burgerMenu,
+#closeMenu {
+    border: none;
+    padding: none;
+    color: none;
+    background: #39E168;
+
+    border-radius: 50px;
+    padding: 0.5rem 0.8rem;
+
+    position: fixed;
+    top: 3%;
+    left: 7%;
+    z-index: 2;
+
+}
+
+#burgerMenu>img,
+#closeMenu>img {
+    width: 4.44vw;
+    cursor: pointer;
+
+
+
+
+}
+
+/* 
+.fillAnimation {
+    overflow: hidden;
+}
+
+.fillAnimation.active {
+    animation: fillAnimation 5s ease;
+}
+
+@keyframes fillAnimation {
+    from {
+        height: 0;
+    }
+
+    to {
+        height: 100%;
+    }
+} */
+#fillAnimation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100vh;
+    background-color: #ff0000;
+
+    overflow: hidden;
+}
+
+#fillAnimation.active {
+    animation: fillAnimation 5s ease;
+}
+
+.profxile {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.profile.show {
+    opacity: 1;
+}
+
+@keyframes fillAnimation {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100vw;
+    }
+}
+
+@media (max-width: 720px) {
+    #userFeed {
+        justify-content: center;
+        margin: 0px;
+    }
+}
+
+@media (max-width: 650px) {
+    .postCta>button {
+        font-size: 16px;
+        border-radius: 50px;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .mediaInput {
+        border-radius: 50px;
+        padding: 0.2rem 0.8rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .postCta>button>img {
+        width: 30px;
+        padding-right: 4px;
+    }
+
+    #inputImage {
+        width: 30px;
+        padding-right: 4px;
+    }
+
+    main {
+        padding: 0px;
+    }
+}
+
+@media (max-width: 400px) {
+    #postContent {
+        width: 200px;
+    }
 }

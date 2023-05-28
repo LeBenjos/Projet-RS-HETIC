@@ -1,4 +1,5 @@
 import { getElement, display, displayCta, hideCta } from './feedFunction.js';
+import { viewportSize } from './sideProfile.js';
 
 const textarea = document.querySelector(".commentContent");
 
@@ -20,7 +21,6 @@ while (true) {
   emoji++;
 }
 reactionEmojiArray.forEach((emoji) => {
-  console.log(emoji)
   if (emoji.classList[1] === "react1") {
     emoji.src = "../Views/assets/icons/smiley-bad.svg";
   } else if (emoji.classList[1] === "react2") {
@@ -75,6 +75,51 @@ display(displayReaction[0], displayReaction[1], "hideCta")
 //   } else {
 //     emoji.src = "../Views/assets/icons/smiley-lol-sideways.svg";
 //   }
-
 // })
 
+let viewport = viewportSize()
+
+if (viewport.width <= 600) {
+  let postButton = document.getElementsByName('postPost')
+  let postImg = document.createElement('img')
+  postImg.src = '../Views/assets/icons/left.png'
+
+  postButton[0].textContent = ''
+  postButton[0].appendChild(postImg)
+}
+
+let burgerButton = document.getElementById('burgerMenu');
+
+
+let aside = document.querySelector('aside');
+let closeMenu = document.getElementById('closeMenu')
+
+let logo = document.getElementById('logo');
+let header = document.getElementsByTagName('header')[0];
+
+if (viewport.width <= 720) {
+  burgerButton.classList.remove('hideCta');
+  logo.remove();
+}
+let profile = document.querySelector(".profile")
+
+
+burgerButton.addEventListener('click', (event) => {
+  event.preventDefault();
+  aside.classList.toggle('hideCta');
+  closeMenu.classList.toggle('hideCta');
+  burgerButton.classList.toggle('hideCta');
+  aside.classList.add('active');
+  setTimeout(() => {
+    profile.classList.add('show');
+  }, 5000);
+  console.log(burgerButton.style);
+});
+
+closeMenu.addEventListener('click', (event) => {
+  event.preventDefault();
+  aside.classList.toggle('hideCta');
+  closeMenu.classList.toggle('hideCta');
+  burgerButton.classList.toggle('hideCta');
+  console.log(burgerButton.style);
+});
