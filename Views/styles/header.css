@@ -104,14 +104,17 @@ header h1 {
 }
 
 .hide {
-    visibility: hidden;
+    display: none;
 }
+.hideCta {
+    display: none !important;
+}
+
 
 #burgerMenu,
 #closeMenu {
     border: none;
-    padding: none;
-    color: none;
+    padding: 0;
     background: #39E168;
 
     border-radius: 50px;
@@ -128,6 +131,50 @@ header h1 {
 #closeMenu>img {
     width: 4.44vw;
     cursor: pointer;
+}
 
+@media only screen and (max-width: 720px) {
+    #friendsLayout,
+    #pageLayout,
+    #pagesLayout,
+    #userFeed,
+    #searchFeed
+    {
+        margin: 0;
+    }
+}
 
+@media (max-width: 650px) {
+    .postCta>button {
+        font-size: 16px;
+        border-radius: 50px;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .mediaInput {
+        border-radius: 50px;
+        padding: 0.2rem 0.8rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .postCta>button>img {
+        width: 30px;
+        padding-right: 4px;
+    }
+
+    #inputImage {
+        width: 30px;
+        padding-right: 4px;
+    }
+
+    main {
+        padding: 0;
+    }
+}
+
+@media (max-width: 400px) {
+    #postContent {
+        width: 200px;
+    }
 }
