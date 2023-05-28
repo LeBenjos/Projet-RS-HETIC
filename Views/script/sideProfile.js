@@ -1,18 +1,24 @@
-export function viewportSize() {
-    const d = document.documentElement;
+export function getViewportSize() {
+    let viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+    let viewportHeight = window.innerHeight || document.documentElement.clientHeight;
     return {
-        height: d.clientHeight,
-        width: d.clientWidth
+        width: viewportWidth,
+        height: viewportHeight
     };
 }
 
-let viewport = viewportSize()
-let height = viewport.height
-let width = viewport.width
+function handleResize(pixel, element, className) {
+    const { width } = getViewportSize();
 
-console.log(height)
-console.log(width)
-if (width <= 720) {
-    document.querySelector('aside').classList.add('hideCta')
+    if (width <= pixel) {
+        document.querySelector(element).classList.add(className);
+    } else {
+        document.querySelector(element).classList.remove(className);
+    }
 }
 
+window.addEventListener('resize', () => {
+    handleResize(720, 'aside', 'hideCta');
+});
+
+handleResize(720, 'aside', 'hideCta');

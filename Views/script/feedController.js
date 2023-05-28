@@ -1,5 +1,5 @@
-import { getElement, display, displayCta, hideCta } from './feedFunction.js';
-import { viewportSize } from './sideProfile.js';
+import { getElement, display, displayCta, hideCta, handleResizePost, handleResizeLogo, displayAside, removeAside } from './feedFunction.js';
+import { getViewportSize } from './sideProfile.js';
 
 const textarea = document.querySelector(".commentContent");
 
@@ -77,49 +77,14 @@ display(displayReaction[0], displayReaction[1], "hideCta")
 //   }
 // })
 
-let viewport = viewportSize()
 
-if (viewport.width <= 600) {
-  let postButton = document.getElementsByName('postPost')
-  let postImg = document.createElement('img')
-  postImg.src = '../Views/assets/icons/left.png'
 
-  postButton[0].textContent = ''
-  postButton[0].appendChild(postImg)
-}
+window.addEventListener('resize', handleResizePost);
+
+handleResizePost();
+
+
 
 let burgerButton = document.getElementById('burgerMenu');
 
-
-let aside = document.querySelector('aside');
-let closeMenu = document.getElementById('closeMenu')
-
-let logo = document.getElementById('logo');
-let header = document.getElementsByTagName('header')[0];
-
-if (viewport.width <= 720) {
-  burgerButton.classList.remove('hideCta');
-  logo.remove();
-}
-let profile = document.querySelector(".profile")
-
-
-burgerButton.addEventListener('click', (event) => {
-  event.preventDefault();
-  aside.classList.toggle('hideCta');
-  closeMenu.classList.toggle('hideCta');
-  burgerButton.classList.toggle('hideCta');
-  aside.classList.add('active');
-  setTimeout(() => {
-    profile.classList.add('show');
-  }, 5000);
-  console.log(burgerButton.style);
-});
-
-closeMenu.addEventListener('click', (event) => {
-  event.preventDefault();
-  aside.classList.toggle('hideCta');
-  closeMenu.classList.toggle('hideCta');
-  burgerButton.classList.toggle('hideCta');
-  console.log(burgerButton.style);
-});
+//baisser la marge 90px

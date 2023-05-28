@@ -66,6 +66,7 @@ if (isset($_POST["createPage"])) {
     </div>
 
 </div>
+<script src="../Views/script/header.js" type="module"></script>
 
 <script>
     document.getElementById("createCta").addEventListener("click", () => {

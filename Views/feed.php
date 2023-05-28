@@ -186,7 +186,6 @@ $likeId = 0;
 </body>
 <script src="../Views/script/feedController.js" type="module"></script>
 
-
 <script>
     let actionState = "<?= $actionMsg ?>"
     if (!actionState) {
