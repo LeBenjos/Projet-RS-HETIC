@@ -114,7 +114,6 @@ header h1 {
 #burgerMenu,
 #closeMenu {
     border: none;
-    padding: 0;
     background: #39E168;
 
     border-radius: 50px;
@@ -141,6 +140,10 @@ header h1 {
     #searchFeed
     {
         margin: 0;
+    }
+
+    main {
+        padding: 0 32px;
     }
 }
 
