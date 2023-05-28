@@ -87,4 +87,3 @@ handleResizePost();
 
 let burgerButton = document.getElementById('burgerMenu');
 
-//baisser la marge 90px
