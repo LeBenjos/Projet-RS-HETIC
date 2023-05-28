@@ -4,6 +4,10 @@
 
 This project is a social network designed for schools and universities. It enables students, teachers, and companies to communicate with each other through a news feed, public and private groups, and pages. Additionally, it features an instant messaging system for real-time communication.
 
+## Fonctionnalités - FR
+
+## Fonctionnalités - EN
+
 ## Technologies
 
 - PHP

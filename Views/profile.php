@@ -6,99 +6,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniLink | <?= $user["user_username"]; ?>'s Profile</title>
     <link rel="stylesheet" href="../Views/styles/style.css">
-    <link rel="stylesheet" href="../Views/styles/profile.css">
-    <link rel="stylesheet" type="text/css" href="../Views/styles/feed.css">
+    <link rel="stylesheet" href="../Views/styles/profiletempo.css">
+    <?php 
+    require_once "../Views/styles/profile.php";
+    ?>
 </head>
-<body class="login">
-    <section>
-        <img src="../Views/assets/imgs/users/banner/<?= $profile["profile_banner"]; ?>" alt="bannière">
-            <div class="profile-block">
-                <img src="../Views/assets/imgs/users/picture/<?= $profile["profile_picture"]; ?>" alt="photo de profil" id="picture">
-                <span>
-                    <?= $user["user_firstname"]?>
-                </span>
-                <span>
-                    <?= $user["user_lastname"]?>
-                </span>
-                <span>
-                    <?= $user["user_username"]?> <?php if($profile["profile_certification"] == 1):?> <img src="../Views/assets/imgs/website/unilink_logo.svg" alt="Certification" class="badge"> <?php endif; ?>
-                </span>
-                <span>
-                    <?= $profile["profile_bio"]; ?>
-                </span>
-                <span>
-                    <?= $profile["profile_location"]; ?>
-                </span>
-                <span>
-                    <?= $profile["profile_activity"]; ?>
-                </span>
-                <a href="index.php?p=feed">Feed</a>
-                <?php if((filter_input(INPUT_GET, "profile_id")) == $_COOKIE['uniCookieUserID']): ?>
-                    <a href="index.php?p=userOptions">Options d'utilisateur</a>
-                <?php endif; ?>
+<body>
+    <section class="profile">
+        <header class="profileHeader">
+            <div class="profileImg">
+                <div class="profileBanner"></div>
+                <div class="profilePicture"></div>
             </div>
-            <?php if($user["user_account_status"] == "disable"): ?>
-                <div>Ce compte est désactivé</div>
-                <?php if($user["user_id"] == $_COOKIE['uniCookieUserID']): ?>
-                    <span>Réactiver votre compte dans vos options </span>
-                <?php endif; ?>
-            <?php else: ?>
-                <?php if($user["user_id"] != $_COOKIE['uniCookieUserID']): ?>
-                    <?php if(!$relation):?>
-                        <a href="index.php?p=managFriend&action=addFriend&user_id2=<?= $user['user_id'] ?>">Demander en ami</a>
-                        <a href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
-                    <?php elseif($relation == "requestAs"): ?>
-                        <a href="index.php?p=managFriend&action=deleteFriend&user_id2=<?= $user['user_id'] ?>">Supprimer la demande ami</a>
-                        <a href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
-                    <?php elseif($relation == "requestBy"): ?>
-                        <a href="index.php?p=managFriend&action=acceptFriend&user_id2=<?= $user['user_id'] ?>">Accepter la demande d'ami</a>
-                        <a href="index.php?p=managFriend&action=deleteFriend&user_id2=<?= $user['user_id'] ?>">Refuser la demande ami</a>
-                        <a href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
-                    <?php elseif($relation == "friend"): ?>
-                        <a href="index.php?p=managFriend&action=deleteFriend&user_id2=<?= $user['user_id'] ?>">Supprimer l'ami</a>
-                        <a href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
-                    <?php elseif($relation == "blockedAs"): ?>
-                        <a href="index.php?p=managFriend&action=unblockFriend&user_id2=<?= $user['user_id'] ?>">Débloquer</a>
-                    <?php elseif($relation == "blockedBy"): ?>
-                        <div>
-                            <span>Vous n'avez pas accès a ce compte...</span>
-                        </div>
-                    <?php endif;?>
-                <?php endif;?>
-                <?php if(($profile["user_id"] == $_COOKIE['uniCookieUserID'] || $profile["profile_status"] == "public" || $relation == "friend") && $relation != "blockedBy"): ?>
-                    <?php if((filter_input(INPUT_GET, "profile_id")) == $_COOKIE['uniCookieUserID']): ?>
-                        <div class="create-post">
-                            <?php if($this->_method == "POST" && $this->_error): ?>
-                                <div class="error" ><?= $this->_error ?></div>
-                            <?php endif; ?>
-                            <form class="postCta" method="POST" enctype="multipart/form-data">
-                                <input type="text" name="postContent" id="postContent" placeholder='Quoi de neuf ?'>
-                                <label for="postImg" class="mediaInput"><img alt="Media Icon" src="../Views/assets/icons/media.svg"></label>
-                                <input type="file" name="postImg" id="postImg">
-                                <input name="typeForme" type="hidden" value="post">
-                                <input type="submit" value="Ajouter">
-                            </form>
-                        </div>
+            <div class="name">
+                <h1><?= $user["user_firstname"]?> <?= $user["user_lastname"]?></h1>
+                <h2>@<?= $user["user_username"]?> <?php if($profile["profile_certification"] == 1):?> <img class="badge" src="../Views/assets/imgs/website/unilink_logo.svg" alt="Certification" class="badge"> <?php endif; ?></h2>
+            </div>
+            <div class="info">
+                <p class="bio"><?= $profile["profile_bio"]; ?></p>
+                <div class="informations">
+                    <div class="information">
+                        <?php if($profile["profile_location"]): ?>
+                            <img src="../Views/assets/icons/activity.svg" alt="localisation">
+                            <p><?= $profile["profile_location"]; ?></p>
+                        <?php endif; ?>
+                    </div>
+                    <div class="information">
+                        <?php if($profile["profile_activity"]): ?>
+                            <img src="../Views/assets/icons/location.svg" alt="activity">
+                            <p><?= $profile["profile_activity"]; ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="userButton">
+                    <a href="index.php?p=feed" class="button">Feed</a>
+                    <?php if($profile["user_id"] == $_COOKIE['uniCookieUserID']): ?>
+                        <a href="index.php?p=userOptions" class="button">Options d'utilisateur</a>
                     <?php endif; ?>
+                    <?php if(($user["user_id"] != $_COOKIE['uniCookieUserID']) && ($user["user_account_status"] != "disable")): ?>
+                        <?php if(!$relation):?>
+                            <a class="button" href="index.php?p=managFriend&action=addFriend&user_id2=<?= $user['user_id'] ?>">Demander en ami</a>
+                            <a class="button" href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
+                        <?php elseif($relation == "requestAs"): ?>
+                            <a class="button" href="index.php?p=managFriend&action=deleteFriend&user_id2=<?= $user['user_id'] ?>">Supprimer la demande ami</a>
+                            <a class="button" href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
+                        <?php elseif($relation == "requestBy"): ?>
+                            <a class="button" href="index.php?p=managFriend&action=acceptFriend&user_id2=<?= $user['user_id'] ?>">Accepter la demande d'ami</a>
+                            <a class="button" href="index.php?p=managFriend&action=deleteFriend&user_id2=<?= $user['user_id'] ?>">Refuser la demande ami</a>
+                            <a class="button" href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
+                        <?php elseif($relation == "friend"): ?>
+                            <a class="button" href="index.php?p=managFriend&action=deleteFriend&user_id2=<?= $user['user_id'] ?>">Supprimer l'ami</a>
+                            <a class="button" href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
+                        <?php elseif($relation == "blockedAs"): ?>
+                            <a class="button" href="index.php?p=managFriend&action=unblockFriend&user_id2=<?= $user['user_id'] ?>">Débloquer</a>
+                        <?php elseif($relation == "blockedBy"): ?>
+                                <p class="error">Vous n'avez pas accès a ce compte...</p>
+                        <?php endif;?>
+                    <?php endif;?>
+                    <?php if($user["user_account_status"] == "disable"): ?>
+                        <p class="error"><?php if($user["user_id"] == $_COOKIE['uniCookieUserID']){ echo("Réactiver votre compte dans vos options"); } else { echo("Ce compte est désactivé"); } ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </header>
+        <section>
+            <?php if(($profile["user_id"] == $_COOKIE['uniCookieUserID'] || $profile["profile_status"] == "public" || $relation == "friend") && $relation != "blockedBy" && $user["user_account_status"] != "disable"): ?>
+                <?php if(($profile["user_id"]) == $_COOKIE['uniCookieUserID']): ?>
+                    <div class="createPost">
+                        <form class="postCta" method="POST" enctype="multipart/form-data">
+                            <input class="input inputPost" type="text" name="postContent" id="postContent" placeholder='Quoi de neuf ?'>
+                            <label class="button" for="postImg" class="mediaInput"><img alt="Media Icon" src="../Views/assets/icons/media.svg"></label>
+                            <input class="file" type="file" name="postImg" id="postImg">
+                            <input name="typeForme" type="hidden" value="post">
+                            <input class="button" type="submit" value="Ajouter">
+                        </form>
+                        <?php if($this->_method == "POST" && $this->_error): ?>
+                            <p class="error" ><?= $this->_error ?></p>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+                <section class="userAllPosts">
                     <?php foreach ($userPosts as $post): ?>
-                        <div class="userPost-block" id="post_id_<?= $post["post_id"] ?>">
-                            <img src="../Views/assets/imgs/users/picture/<?= $post["profile_picture"]; ?>" alt="photo de profil">
-                            <span><?= $post["user_username"] ?></span>
-                            <span>Il y a <?= $this->getNewDate($post["post_date"]) ?></span> 
-                            <p><?= $post["post_content"] ?></p>
+                        <div class="userPost" id="post_id_<?= $post["post_id"] ?>">
+                            <div class="userPictureInfo">
+                                <img class="postPicture" src="../Views/assets/imgs/users/picture/<?= $post["profile_picture"]; ?>" alt="photo de profil">
+                                <div class="postInfo">
+                                    <h3><?= $post["user_username"] ?></h3>
+                                    <h4>Il y a <?= $this->getNewDate($post["post_date"]) ?></h4> 
+                                </div>
+                            </div>
+                            <p class="postContent"><?= $post["post_content"] ?></p>
                             <?php if(isset($post["post_img"])):?>
-                                <img src="../Views/assets/imgs/users/posts/<?= $post["post_img"] ?>" alt="Image du post de <?= $post["user_username"]?>">
+                                <img class="postImg" src="../Views/assets/imgs/users/posts/<?= $post["post_img"] ?>" alt="Image du post de <?= $post["user_username"]?>">
                             <?php endif; ?>
-                            <span><?= count($this->_modelPost->getReactionPosts("post", $post["post_id"])) ?> réactions</span>
-                            <button class="reactButton">Réagir</button>
+                            <div class="postReact">
+                                <p><?= count($this->_modelPost->getReactionPosts("post", $post["post_id"])) ?> réactions</p>
+                                <button class="reactButton button">Réagir</button>
+                            </div>
                             <div class="react hide">
-                                <ul>
-                                    <li><a href="index.php?p=react&reaction_type=post&reaction_type_id=<?= $post["post_id"] ?>&reaction_emoji=like">like</a></li>
-                                    <li><a href="index.php?p=react&reaction_type=post&reaction_type_id=<?= $post["post_id"] ?>&reaction_emoji=celebrate">celebrate</a></li>
-                                    <li><a href="index.php?p=react&reaction_type=post&reaction_type_id=<?= $post["post_id"] ?>&reaction_emoji=love">love</a></li>
-                                    <li><a href="index.php?p=react&reaction_type=post&reaction_type_id=<?= $post["post_id"] ?>&reaction_emoji=insightful">insightful</a></li>
-                                    <li><a href="index.php?p=react&reaction_type=post&reaction_type_id=<?= $post["post_id"] ?>&reaction_emoji=curious">curious</a></li>
-                                    <li>-----------------------------------------------------</li>
+                                <ul class="reactType">
+                                    <li><a class="button" href="index.php?p=react&reaction_type=post&reaction_type_id=<?= $post["post_id"] ?>&reaction_emoji=like">like</a></li>
+                                    <li><a class="button" href="index.php?p=react&reaction_type=post&reaction_type_id=<?= $post["post_id"] ?>&reaction_emoji=celebrate">celebrate</a></li>
+                                    <li><a class="button" href="index.php?p=react&reaction_type=post&reaction_type_id=<?= $post["post_id"] ?>&reaction_emoji=love">love</a></li>
+                                    <li><a class="button" href="index.php?p=react&reaction_type=post&reaction_type_id=<?= $post["post_id"] ?>&reaction_emoji=insightful">insightful</a></li>
+                                    <li><a class="button" href="index.php?p=react&reaction_type=post&reaction_type_id=<?= $post["post_id"] ?>&reaction_emoji=curious">curious</a></li>
                                 </ul>
                                 <ul>
                                     <?php foreach($this->_modelPost->getReactionPosts("post", $post["post_id"]) as $reaction): ?>
@@ -106,21 +117,24 @@
                                     <?php endforeach; ?>
                                 </ul>
                             </div>
-                            <span><?= count($this->_modelComment->getCommentPosts($post["post_id"])) ?> commentaires</span>
-                            <button class="commentButton">Voir plus...</button>
+                            <div class="postComment">
+                                <span><?= count($this->_modelComment->getCommentPosts($post["post_id"])) ?> commentaires</span>
+                                <button class="commentButton button">Voir plus...</button>
+                            </div>
                             <div class="comment hide">
                                 <form method="POST">
-                                    <input name="commentContent" type="text" placeholder="Ecrire un commentaire...">
+                                    <input class="input inputPost" name="commentContent" type="text" placeholder="Ecrire un commentaire...">
                                     <input name="postId" type="hidden" value="<?= $post["post_id"] ?>">
                                     <input name="typeForme" type="hidden" value="postComment">
-                                    <input type="submit" value="Envoyer">
+                                    <input class="button" type="submit" value="Envoyer">
                                 </form>
+
                                 <ul>
                                     <?php foreach($this->_modelComment->getCommentPosts($post["post_id"], NULL) as $comment): ?>
                                         <li class="allComment">
                                             <?= $comment["user_username"]?> : <?= $comment["post_comment_content"] ?>
                                                 <span><?= count($this->_modelPost->getReactionPosts("comment", $comment["post_comment_id"])) ?> réactions</span>
-                                                <button class="reactCommentButton">Réagir</button>
+                                                <button class="reactCommentButton button">Réagir</button>
                                                 <div class="commentReaction hide">
                                                     <ul>
                                                         <li><a href="index.php?p=react&reaction_type=comment&reaction_type_id=<?= $comment["post_comment_id"] ?>&reaction_emoji=like">like</a></li>
@@ -137,21 +151,21 @@
                                                     </ul>
                                                 </div>
                                                 <span><?= count($this->_modelComment->getCommentPosts($post["post_id"], $comment["post_comment_id"])) ?> réponses</span>
-                                                <button class="commentCommentButton">Voir plus...</button>
+                                                <button class="commentCommentButton button">Voir plus...</button>
                                                 <div class="commentComment hide">
-                                                    <form method="POST">
-                                                        <input name="commentCommentContent" type="text" placeholder="Ecrire une réponse...">
+                                                    <form class="formCommentComment" method="POST">
+                                                        <input class="input inputPost" name="commentCommentContent" type="text" placeholder="Ecrire une réponse...">
                                                         <input name="postId" type="hidden" value="<?= $post["post_id"] ?>">
                                                         <input name="commentId" type="hidden" value="<?= $comment["post_comment_id"] ?>">
                                                         <input name="typeForme" type="hidden" value="postCommentComment">
-                                                        <input type="submit" value="Envoyer">
+                                                        <input class="button" type="submit" value="Envoyer">
                                                     </form>
                                                     <ul>
                                                         <?php foreach($this->_modelComment->getCommentPosts($post["post_id"], $comment["post_comment_id"]) as $commentComment): ?>
                                                             <li class="allCommentComment">
-                                                                <?= $commentComment["user_username"] ?> : <?= $commentComment["post_comment_content"] ?>
+                                                                <?=$commentComment["user_username"] ?> : <?= $commentComment["post_comment_content"] ?>
                                                                 <span><?= count($this->_modelPost->getReactionPosts("comment", $commentComment["post_comment_id"])) ?> réactions</span>
-                                                                <button class="reactCommentCommentButton">Réagir</button>
+                                                                <button class="reactCommentCommentButton button">Réagir</button>
                                                                 <div class="commentCommentReaction hide">
                                                                     <ul>
                                                                         <li><a href="index.php?p=react&reaction_type=comment&reaction_type_id=<?= $commentComment["post_comment_id"] ?>&reaction_emoji=like">like</a></li>
@@ -167,31 +181,30 @@
                                                                         <?php endforeach; ?>
                                                                     </ul>
                                                                 </div>
-                                                                <?php if($comment["user_id"] == $_COOKIE['uniCookieUserID']): ?><a href="index.php?p=deletePCR&delete_type=posts_comments&delete_id=<?= $commentComment["post_comment_id"] ?>">supprimer la réponse</a><?php endif; ?>
+                                                                <?php if($commentComment["user_id"] == $_COOKIE['uniCookieUserID']): ?><a class="deletePC" href="index.php?p=deletePCR&delete_type=posts_comments&delete_id=<?= $commentComment["post_comment_id"] ?>">supprimer la réponse</a><?php endif; ?>
                                                             </li>
                                                         <?php endforeach; ?>
                                                     </ul>
                                                 </div>
-                                                <?php if($comment["user_id"] == $_COOKIE['uniCookieUserID']): ?><a href="index.php?p=deletePCR&delete_type=posts_comments&delete_id=<?= $comment["post_comment_id"] ?>">supprimer le commentaire</a><?php endif; ?>
+                                                <?php if($comment["user_id"] == $_COOKIE['uniCookieUserID']): ?><a class="deletePC" href="index.php?p=deletePCR&delete_type=posts_comments&delete_id=<?= $comment["post_comment_id"] ?>">supprimer le commentaire</a><?php endif; ?>
                                             </li>
                                     <?php endforeach; ?>
                                 </ul>
                             </div>
-                            <?php if((filter_input(INPUT_GET, "profile_id")) == $_COOKIE['uniCookieUserID']): ?>
-                                <a href="index.php?p=deletePCR&delete_type=posts&delete_id=<?= $post["post_id"] ?>">Supprimer le post</a>
+                            <?php if($profile["user_id"] == $_COOKIE['uniCookieUserID']): ?>
+                                <a class="deletePC" href="index.php?p=deletePCR&delete_type=posts&delete_id=<?= $post["post_id"] ?>">Supprimer le post</a>
                             <?php endif; ?>
                         </div>
+
                     <?php endforeach; ?>
-                <?php elseif($relation != "blockedBy"): ?>
-                    <div>
-                        <span>Ce compte est privé</span>
-                    </div>
-                <?php endif; ?>
+                </section>
+            <?php elseif($relation != "blockedBy" && $user["user_account_status"] != "disable"): ?>
+                    <p class="error">Ce compte est privé</p>
             <?php endif; ?>
+        </section>
     </section>
-    
     <script>
-        const posts = document.querySelectorAll(".userPost-block")
+        const posts = document.querySelectorAll(".userPost")
 
         posts.forEach((post) => {
             const reactPostButton = post.querySelector(".reactButton")
