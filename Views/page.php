@@ -30,6 +30,15 @@ if (isset($_POST["follow"])) {
     $pageController->follow();
     header("Refresh:0");
 }
+if (isset($_POST["confirmSettings"])) {
+    if ($_POST["name"] || $_POST["bio"]) {
+        $pageController->modifyPageInfo($_POST["name"], $_POST["bio"]);
+        header("Refresh:0");
+
+    } else {
+        $errorMsg = "Can't be empty !";
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -63,16 +72,26 @@ if (isset($_POST["follow"])) {
                         <button name="unfollow" id="unfollow" class="headerCTA unfollow">Se désabonner</button>
                     <?php endif; ?>
                     <?php if($pageController->isAdmin()):?>
-                        <button name="adminSettings" id="adminSettings" class="headerCTA">Réglages ADMIN</button>
+                        <button id="showSettings" class="headerCTA" type="button">Réglages ADMIN</button>
                     <?php endif;?>
                 </form>
             </div>
             <?php if($pageController->isAdmin()):?>
-            <div id="adminPostAction">
+            <form id="adminSettings" class="hideCta" method="post">
+                <label for="name">Nom de la page</label>
+                <input type="text" name="name" id="name" value="<?= $pageData["info"]["name"] ?>">
+                <label for="bio">Bio de la page</label>
+                <textarea name="bio" id="bio"><?= $pageData["info"]["bio"] ?></textarea>
+                <div>
+                    <button name="confirmSettings" id="confirmSettings" class="headerCTA">Confirmer</button>
+                    <button  type="button" id="cancelSettings" class="headerCTA unfollow">Annuler</button>
+                </div>
+            </form>
+                <div id="adminPostAction">
                 <div class="error" id="errorMsg">
                     <?= $errorMsg ?>
                 </div>
-                <div class="success" id="succesMsg">
+                <div class="success" id="successMsg">
                     <?= $successMsg ?>
                 </div>
                 <form class="postCta" method="post">
@@ -130,6 +149,15 @@ if (isset($_POST["follow"])) {
     </main>
 </body>
 <script>
+    document.getElementById("showSettings").addEventListener("click", () => {
+        document.getElementById("adminSettings").classList.remove("hideCta")
+    })
+
+    document.getElementById("cancelSettings").addEventListener("click", () => {
+        document.getElementById("adminSettings").classList.add("hideCta")
+    })
+
+
     const error = "<?= $errorMsg ?>";
     const success = "<?= $successMsg ?>";
     if (!error) {
@@ -142,14 +170,12 @@ if (isset($_POST["follow"])) {
     }
 
     if (!success) {
-        document.getElementById("succesMsg").classList.add('hide')
+        document.getElementById("successMsg").classList.add('hide')
     } else{
-        document.getElementById("succesMsg").classList.remove('hide');
+        document.getElementById("successMsg").classList.remove('hide');
         setTimeout(() => {
-            document.getElementById("succesMsg").classList.add('hide');
+            document.getElementById("successMsg").classList.add('hide');
         }, 1500)
     }
-
-
 </script>
 </html>
