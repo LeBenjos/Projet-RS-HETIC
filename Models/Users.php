@@ -145,4 +145,25 @@ class User {
             ":user_birthdate" => $user_birthdate
         ]);
     }
+    public function changeUserProfileBio($profile_bio, $user_id) {
+        $stmt = $this->_db->_pdo->prepare("UPDATE profiles SET profile_bio = :profile_bio WHERE user_id = :user_id");
+        $stmt-> execute([
+            ":profile_bio" => $profile_bio,
+            ":user_id" => $user_id
+        ]);
+    }
+    public function changeProfileLocation($profile_location, $user_id) {
+        $stmt = $this->_db->_pdo->prepare("UPDATE profiles SET profile_location = :profile_location WHERE user_id = :user_id");
+        $stmt-> execute([
+            ":profile_location" => $profile_location,
+            ":user_id" => $user_id
+        ]);
+    }
+    public function changeProfileActivity($profile_activity, $user_id) {
+        $stmt = $this->_db->_pdo->prepare("UPDATE profiles SET profile_activity = :profile_activity WHERE user_id = :user_id");
+        $stmt-> execute([
+            ":profile_activity" => $profile_activity,
+            ":user_id" => $user_id
+        ]);
+    }
 }

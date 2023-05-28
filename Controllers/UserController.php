@@ -8,6 +8,7 @@ use Profiles\Profile;
 use Authentifications\Authentification;
 use Posts\Post;
 use Reactions\Reaction;
+use Friends\Friend;
 // src
 require_once '../src/Helpers.php';
 use Helpers\Helpers;
@@ -17,17 +18,22 @@ class UserOptionsController {
     private string $_method;
     private Helpers $_helpers;
     private User $_modelUser;
+    private Profile $_modelProfile;
     private $_error;
+    private $_success;
 
     public function __construct($page, $method){
         require_once '../Models/Users.php';
+        require_once '../Models/Profiles.php';
 
         $this->_page = $page;
         $this->_method = $method;
         $this->_helpers = new Helpers($page, isset($_COOKIE['uniCookieUserID']) ? $_COOKIE['uniCookieUserID'] : '', isset($_COOKIE['uniCookieAgent']) ? $_COOKIE['uniCookieAgent'] : '', isset($_COOKIE['uniCookieToken']) ? $_COOKIE['uniCookieToken'] : '');
         $this->_modelUser = new User();
+        $this->_modelProfile = new Profile();
 
         $user = $this->_modelUser->getUserByID($_COOKIE['uniCookieUserID']);
+        $profile = $this->_modelProfile->getProfileInfo($_COOKIE['uniCookieUserID']);
 
         switch ($this->_method) {
             case "POST" : 
@@ -108,18 +114,85 @@ class UserOptionsController {
                 }
                 // Changer la date de naissance
                 $user_birthdate = filter_input(INPUT_POST, "userBirthdate");
-                if($user_birthdate !=$user["userBirthdate"]){
+                if($user_birthdate != $user["user_birthdate"]){
                     $user_birthdate = preg_match("`^([0-9]{4})(-)(0[1-9]|1[0-2])(-)(0[1-9]|1[0-9]|2[0-9]|3[0-1])$`", filter_input(INPUT_POST, "userBirthdate")) ? filter_input(INPUT_POST, "userBirthdate") : false;
                     if (!$user_birthdate && !$this->_error) { $this->_error = "Date de naissance invalide !"; }
+                    $user_birthdate = $this->checkYears($user_birthdate);
+                    if(!$user_birthdate && !$this->_error) { $this->_error = "Vous n'avez pas l'age requis"; }
                     if (!$this->_error) {
                         $this->_modelUser->changeUserBirthdate($_COOKIE['uniCookieUserID'], $user_birthdate);
                         $this->_success = "Date de naissance modifié !";
+                        $user["user_birthdate"] = $user_birthdate;
                     }
+                }
+                // Changer la bio
+                $profile_bio = filter_input(INPUT_POST, "profileBio");
+                if($profile_bio !=$profile["profile_bio"]) {
+                    $profile_bio = preg_match("`^.+$`" , preg_replace("`^\s+|\s+$|^$`", '', filter_input(INPUT_POST, "profileBio"))) ? preg_replace("`^\s+|\s+$|^$`", '', filter_input(INPUT_POST, "profileBio")) : false;
+                    if (!$this->_error) {
+                        $this->_modelUser->changeUserProfileBio($profile_bio, $_COOKIE['uniCookieUserID']);
+                        $this->_success = "Bio modifiée !";
+                        $profile["profile_bio"] = $profile_bio;
+                    }
+                }
+                // Changer la localisation
+                $profile_location = filter_input(INPUT_POST, "profileLocation");
+                if ($profile_location !=$profile["profile_location"]) {
+                    $profile_location = preg_match("`^.+$`" , preg_replace("`^\s+|\s+$|^$`", '', filter_input(INPUT_POST, "profileLocation"))) ? preg_replace("`^\s+|\s+$|^$`", '', filter_input(INPUT_POST, "profileLocation")) : false;
+                    if (!$this->_error) {
+                        $this->_modelUser->changeProfileLocation($profile_location, $_COOKIE['uniCookieUserID']);
+                        $this->_success = "Localisation modifiée !";
+                        $profile["profile_location"] = $profile_location;
+                    }
+                }
+                // Changer l'activité
+                $profile_activity = filter_input(INPUT_POST, "profileActivity");
+                if ($profile_activity !=$profile["profile_activity"]) {
+                    $profile_activity = preg_match("`^.+$`" , preg_replace("`^\s+|\s+$|^$`", '', filter_input(INPUT_POST, "profileActivity"))) ? preg_replace("`^\s+|\s+$|^$`", '', filter_input(INPUT_POST, "profileActivity")) : false;
+                    if (!$this->_error) {
+                        $this->_modelUser->changeProfileActivity($profile_activity, $_COOKIE['uniCookieUserID']);
+                        $this->_success = "Activité modifiée !";
+                        $profile["profile_activity"] = $profile_activity;
+                    }
+                }
+                // Changer la photo de profile
+                if(isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK){
+                    $profile_picture = file_get_contents($_FILES['profile_picture']['tmp_name']);
+                    $profile_pictureHash = hash('sha256', $profile_picture);
+                    $profile_pictureExtension = pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION);
+                    $profile_picturePath = '../Views/assets/imgs/users/picture/' . $profile_pictureHash . '.' . $profile_pictureExtension;
+                    file_put_contents($profile_picturePath, $profile_picture);
+                    $profile_picturePath = $profile_pictureHash . '.' . $profile_pictureExtension;
+                    $this->_modelProfile->changeProfileImg("profile_picture", $profile_picturePath, $_COOKIE['uniCookieUserID']);
+                    if($profile["profile_picture"] != "default_picture.jpg" && !$this->_modelProfile->imgIsUse("profile_picture", $profile["profile_picture"])){
+                        unlink("../Views/assets/imgs/users/picture/" . $profile["profile_picture"]);
+                    }
+                    $profile["profile_picture"] = $profile_picturePath;
+                }
+                // Changer la bannière
+                if(isset($_FILES['profile_banner']) && $_FILES['profile_banner']['error'] === UPLOAD_ERR_OK){
+                    $profile_banner = file_get_contents($_FILES['profile_banner']['tmp_name']);
+                    $profile_bannerHash = hash('sha256', $profile_banner);
+                    $profile_bannerExtension = pathinfo($_FILES['profile_banner']['name'], PATHINFO_EXTENSION);
+                    $profile_bannerPath = '../Views/assets/imgs/users/banner/' . $profile_bannerHash . '.' . $profile_bannerExtension;
+                    file_put_contents($profile_bannerPath, $profile_banner);
+                    $profile_bannerPath = $profile_bannerHash . '.' . $profile_bannerExtension;
+                    $this->_modelProfile->changeProfileImg("profile_banner", $profile_bannerPath, $_COOKIE['uniCookieUserID']);
+                    if($profile["profile_banner"] != "default_banner.jpg" && !$this->_modelProfile->imgIsUse("profile_banner", $profile["profile_banner"])){
+                        unlink("../Views/assets/imgs/users/banner/" . $profile["profile_banner"]);
+                    }
+                    $profile["profile_banner"] = $profile_bannerPath;
                 }
             break;
         }
 
         require_once '../Views/userOptions.php';
+    }
+
+    private function checkYears($birthdate){
+        $limit = 18;
+        $age = (date('md') < date('md', strtotime($birthdate))) ? (date('Y') - date('Y', strtotime($birthdate)) - 1) : (date('Y') - date('Y', strtotime($birthdate)));
+        return ($age >= $limit && $age <= 120) ? $birthdate : false;
     }
 }
 
@@ -155,12 +228,14 @@ class DeleteUserController {
     private Authentification $_modelAuth;
     private Post $_modelPost;
     private Reaction $_modelReaction;
+    private Friend $_modelFriend;
 
     public function __construct($page, $method){
         require_once '../Models/Users.php';
         require_once '../Models/Profiles.php';
         require_once '../Models/Posts.php';
         require_once '../Models/reactions.php';
+        require_once '../Models/Friends.php';
 
         $this->_page = $page;
         $this->_method = $method;
@@ -170,7 +245,9 @@ class DeleteUserController {
         $this->_modelAuth = new Authentification();
         $this->_modelPost = new Post();
         $this->_modelReaction = new Reaction();
+        $this->_modelFriend = new Friend();
 
+        $this->_modelFriend->deleteAllRelation($_COOKIE['uniCookieUserID']);
         $this->_modelReaction->deleteAllReactions($_COOKIE['uniCookieUserID']);
         $this->_modelPost->deleteAllPosts($_COOKIE['uniCookieUserID']);
         $this->_modelProfile->deleteProfile($_COOKIE['uniCookieUserID']);

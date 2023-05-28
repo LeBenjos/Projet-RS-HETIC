@@ -6,6 +6,7 @@ require_once '../Controllers/AuthController.php';
 
 use AuthController\FeedRouter;
 use AuthController\PageRouter;
+use AuthController\PagesRouter;
 use AuthController\PostRouter;
 use AuthController\RegisterController;
 use AuthController\LoginController;
@@ -17,16 +18,20 @@ require_once '../Controllers/UserController.php';
 use UserController\UserOptionsController;
 use UserController\DeleteUserController;
 use UserController\UpdateUserStatusController;
-require_once '../Controllers/PostController.php';
-use PostController\DeletePostController;
+require_once '../Controllers/DeletePCRController.php';
+use DeletePCRController\DeletePCRController;
 require_once '../Controllers/HTTPResponsesController.php';
 use HTTPResponses\HTTPResponseController;
 require_once '../Controllers/ProfileController.php';
 use ProfileController\ProfileController;
+use ProfileController\UpdateProfileStatusController;
 require_once '../Controllers/ReactionController.php';
 use ReactionController\ReactController;
 require_once '../Controllers/CommentController.php';
 use CommentController\DeleteCommentController;
+require_once '../Controllers/FriendController.php';
+use FriendController\FriendController;
+use FriendController\ManagFriendsController;
 
 date_default_timezone_set('Europe/Paris');
 
@@ -59,11 +64,8 @@ class Router {
             case "profile":
                 $this->_controller = new ProfileController($this->_page, $this->_method);
                 break;
-            case "deletePost":
-                $this->_controller = new DeletePostController($this->_page, $this->_method);
-                break;
-            case "deleteComment":
-                $this->_controller = new DeleteCommentController($this->_page, $this->_method);
+            case "deletePCR":
+                $this->_controller = new DeletePCRController($this->_page, $this->_method);
                 break;
             case "react" :
                 $this->_controller = new ReactController($this->_page, $this->_method);
@@ -73,6 +75,9 @@ class Router {
                 break;
             case "updateAccountStatus":
                 $this->_controller = new UpdateUserStatusController($this->_page, $this->_method);
+                break;
+            case "updateProfileStatus":
+                $this->_controller = new UpdateProfileStatusController($this->_page, $this->_method);
                 break;
             case "resendMail":
                 $this->_controller = new ResendMailController($this->_page, $this->_method);
@@ -87,7 +92,16 @@ class Router {
                 $this->_controller = new SearchRouter($this->_page, $this->_method);
                 break;
             case "pages":
+                $this->_controller = new PagesRouter($this->_page, $this->_method);
+                break;
+            case "page":
                 $this->_controller = new PageRouter($this->_page, $this->_method);
+                break;
+            case "managFriend":
+                $this->_controller = new ManagFriendsController($this->_page, $this->_method);
+                break;
+            case "friends":
+                $this->_controller = new FriendController($this->_page, $this->_method);
                 break;
             default:
                 $this->_controller = new HTTPResponseController($this->_page, $this->_method);
