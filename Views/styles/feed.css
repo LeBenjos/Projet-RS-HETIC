@@ -241,30 +241,6 @@ input[type="file"] {
 
 }
 
-#burgerMenu,
-#closeMenu {
-    border: none;
-    padding: none;
-    color: none;
-    background: #39E168;
-
-    border-radius: 50px;
-    padding: 0.5rem 0.8rem;
-
-    position: fixed;
-    top: 3%;
-    left: 7%;
-    z-index: 2;
-
-}
-
-#burgerMenu>img,
-#closeMenu>img {
-    width: 4.44vw;
-    cursor: pointer;
-
-
-}
 
 @media (max-width: 720px) {
     #userFeed {
