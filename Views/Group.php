@@ -73,7 +73,7 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $group_name = $_POST['group_name'];
-    $group_status = $_POST['status'];
+    $group_status = $_POST['group_status'];
     $group_at = $_POST['group_at'];
     $group_picture = $_FILES['group_picture']['name'];
     $group_banner = $_FILES['group_banner']['name'];
