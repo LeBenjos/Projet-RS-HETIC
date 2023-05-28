@@ -7,6 +7,7 @@ use Profiles\Profile;
 use Users\User;
 use Posts\Post;
 use Comments\Comment;
+use Friends\Friend;
 // Src
 require_once '../src/Helpers.php';
 use Helpers\Helpers;
@@ -20,6 +21,7 @@ class ProfileController {
     private User $_modelUser;
     private Post $_modelPost;
     private Comment $_modelComment;
+    private Friend $_modelFriend;
     private $_error;
 
     public function __construct($page, $method){
@@ -27,6 +29,7 @@ class ProfileController {
         require_once '../Models/Users.php';
         require_once '../Models/Posts.php';
         require_once '../Models/Comments.php';
+        require_once '../Models/Friends.php';
 
         $this->_page = $page;
         $this->_method = $method;
@@ -35,9 +38,21 @@ class ProfileController {
         $this->_modelUser = new User();
         $this->_modelPost = new Post();
         $this->_modelComment = new Comment();
+        $this->_modelFriend = new Friend();
 
         $profile = $this->_modelProfile->getProfileInfo((filter_input(INPUT_GET, "profile_id")));
         $user = $this->_modelUser->getUserByID((filter_input(INPUT_GET, "profile_id")));
+
+        $relation = '';
+        if($user["user_id"] != $_COOKIE['uniCookieUserID']){
+            $relation = $this->_modelFriend->areFriend($_COOKIE['uniCookieUserID'], $user["user_id"]);
+            if($relation == "waiting"){
+                $relation = ($this->_modelFriend->checkRelation($_COOKIE['uniCookieUserID'], $user["user_id"], $relation)) ? "requestAs" : "requestBy";
+            } elseif($relation == "blocked"){
+                $relation = ($this->_modelFriend->checkRelation($_COOKIE['uniCookieUserID'], $user["user_id"], $relation)) ? "blockedAs" : "blockedBy";
+            }
+        }
+            
         
         if(!$profile || !$user){
             header("Location: index.php?p=404");
@@ -89,7 +104,6 @@ class ProfileController {
         $userPosts = $this->_modelPost->getUserProfilePosts((filter_input(INPUT_GET, "profile_id")));
 
         require_once '../Views/profile.php';
-
     }
 
     public function getNewDate($dateString){

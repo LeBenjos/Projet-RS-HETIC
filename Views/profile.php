@@ -37,7 +37,29 @@
                     <a href="index.php?p=userOptions">Options d'utilisateur</a>
                 <?php endif; ?>
             </div>
-            <?php if($profile["user_id"] == $_COOKIE['uniCookieUserID'] || $profile["profile_status"] == "public"): ?>
+            <?php if($user["user_id"] != $_COOKIE['uniCookieUserID']): ?>
+                <?php if(!$relation):?>
+                    <a href="index.php?p=managFriend&action=addFriend&user_id2=<?= $user['user_id'] ?>">Demander en ami</a>
+                    <a href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
+                <?php elseif($relation == "requestAs"): ?>
+                    <a href="index.php?p=managFriend&action=deleteFriend&user_id2=<?= $user['user_id'] ?>">Supprimer la demande ami</a>
+                    <a href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
+                <?php elseif($relation == "requestBy"): ?>
+                    <a href="index.php?p=managFriend&action=acceptFriend&user_id2=<?= $user['user_id'] ?>">Accepter la demande d'ami</a>
+                    <a href="index.php?p=managFriend&action=deleteFriend&user_id2=<?= $user['user_id'] ?>">Refuser la demande ami</a>
+                    <a href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
+                <?php elseif($relation == "friend"): ?>
+                    <a href="index.php?p=managFriend&action=deleteFriend&user_id2=<?= $user['user_id'] ?>">Supprimer l'ami</a>
+                    <a href="index.php?p=managFriend&action=blockFriend&user_id2=<?= $user['user_id'] ?>">Bloquer</a>
+                <?php elseif($relation == "blockedAs"): ?>
+                    <a href="index.php?p=managFriend&action=unblockFriend&user_id2=<?= $user['user_id'] ?>">Débloquer</a>
+                <?php elseif($relation == "blockedBy"): ?>
+                    <div>
+                        <span>Vous n'avez pas accès a ce compte...</span>
+                    </div>
+                <?php endif;?>
+            <?php endif;?>
+            <?php if(($profile["user_id"] == $_COOKIE['uniCookieUserID'] || $profile["profile_status"] == "public" || $relation == "friend") && $relation != "blockedBy"): ?>
                 <?php if((filter_input(INPUT_GET, "profile_id")) == $_COOKIE['uniCookieUserID']): ?>
                     <div class="create-post">
                         <?php if($this->_method == "POST" && $this->_error): ?>
@@ -154,8 +176,10 @@
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
-            <?php else: ?>
-                <span>Ce compte est privé</span>
+            <?php elseif($relation != "blockedBy"): ?>
+                <div>
+                    <span>Ce compte est privé</span>
+                </div>
             <?php endif; ?>
     </section>
     

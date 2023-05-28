@@ -31,6 +31,7 @@ require_once '../Controllers/CommentController.php';
 use CommentController\DeleteCommentController;
 require_once '../Controllers/FriendController.php';
 use FriendController\FriendController;
+use FriendController\ManagFriendsController;
 
 date_default_timezone_set('Europe/Paris');
 
@@ -96,11 +97,9 @@ class Router {
             case "page":
                 $this->_controller = new PageRouter($this->_page, $this->_method);
                 break;
-            case "blockFriend":
-            case "unblockFriend":
-            case "deleteFriend":
-            case "acceptFriend":
-            case "addFriend":
+            case "managFriend":
+                $this->_controller = new ManagFriendsController($this->_page, $this->_method);
+                break;
             case "friends":
                 $this->_controller = new FriendController($this->_page, $this->_method);
                 break;

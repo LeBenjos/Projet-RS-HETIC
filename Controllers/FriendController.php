@@ -6,10 +6,10 @@ use Helpers\Helpers;
 use Friends\Friend;
 
 class FriendController {
-    private Helpers $_helpers;
-    private Friend $_modelFriend;
     private string $_method;
     private string $_page;
+    private Helpers $_helpers;
+    private Friend $_modelFriend;
     private int $_user_id1;
     private string $_token;
     private string $_user_id2;
@@ -31,37 +31,47 @@ class FriendController {
         $this->_friends_requesting = $this->_modelFriend->get_friend_requesting($this->_user_id1);
         $this->_blocked = $this->_modelFriend->get_blocked($this->_user_id1);
         require_once '../Views/friends.php';
-        switch ($this->_method) {
-            case 'POST':
-                switch ($this->_page) {
-                    case 'addFriend':
-                        $this->_user_id2 = filter_input(INPUT_POST, 'user_id2');
-                        $this->_modelFriend->add_friends($this->_user_id1, $this->_user_id2);
-                        header("Location: " . $_SERVER['HTTP_REFERER']);
-                        break;
-                    case 'acceptFriend':
-                        $this->_user_id2 = filter_input(INPUT_POST, 'user_id2');
-                        $this->_modelFriend->accept_friend($this->_user_id1, $this->_user_id2);
-                        header("Location: " . $_SERVER['HTTP_REFERER']);
-                        break;
-                    case 'blockFriend':
-                        $this->_user_id2 = filter_input(INPUT_POST, 'user_id2');
-                        $this->_modelFriend->block_friend($this->_user_id1, $this->_user_id2);
-                        header("Location: " . $_SERVER['HTTP_REFERER']);
-                        break;
-                    case 'unblockFriend':
-                        $this->_user_id2 = filter_input(INPUT_POST, 'user_id2');
-                        $this->_modelFriend->unblock_friend($this->_user_id1, $this->_user_id2);
-                        header("Location: " . $_SERVER['HTTP_REFERER']);
-                        break;
-                    case 'deleteFriend':
-                        $this->_user_id2 = filter_input(INPUT_POST, 'user_id2');
-                        $this->_modelFriend->delete_friend($this->_user_id1, $this->_user_id2);
-                        header("Location: " . $_SERVER['HTTP_REFERER']);
-                        break;
-                }
-                break;
-        }
     }
 }
 
+class ManagFriendsController{
+    private string $_method;
+    private string $_page;
+    private Helpers $_helpers;
+
+    public function __construct($_page, $_method){
+        require_once '../Models/Friends.php';
+
+        $this->_page = $_page;
+        $this->_method = $_method;
+        $this->_helpers = new Helpers($_page, isset($_COOKIE['uniCookieUserID']) ? $_COOKIE['uniCookieUserID'] : '', isset($_COOKIE['uniCookieAgent']) ? $_COOKIE['uniCookieAgent'] : '', isset($_COOKIE['uniCookieToken']) ? $_COOKIE['uniCookieToken'] : ''); 
+        $this->_modelFriend = new Friend();
+
+        $action = preg_match("`^(addFriend|deleteFriend|acceptFriend|blockFriend|unblockFriend)$`", filter_input(INPUT_GET, 'action')) ? filter_input(INPUT_GET, 'action') : '';
+        switch ($action) {
+            case 'addFriend':
+                $user_id2 = filter_input(INPUT_GET, 'user_id2', FILTER_VALIDATE_INT);
+                $this->_modelFriend->add_friends($_COOKIE['uniCookieUserID'], $user_id2);
+                break;
+            case 'deleteFriend':
+                $user_id2 = filter_input(INPUT_GET, 'user_id2', FILTER_VALIDATE_INT);
+                $this->_modelFriend->delete_friend($_COOKIE['uniCookieUserID'], $user_id2);
+                break;
+            case 'acceptFriend':
+                $user_id2 = filter_input(INPUT_GET, 'user_id2', FILTER_VALIDATE_INT);
+                $this->_modelFriend->accept_friend($_COOKIE['uniCookieUserID'], $user_id2);
+                break;
+            case 'blockFriend':
+                $user_id2 = filter_input(INPUT_GET, 'user_id2', FILTER_VALIDATE_INT);
+                $this->_modelFriend->block_friend($_COOKIE['uniCookieUserID'], $user_id2);
+                break;
+            case 'unblockFriend':
+                $user_id2 = filter_input(INPUT_GET, 'user_id2', FILTER_VALIDATE_INT);
+                $this->_modelFriend->unblock_friend($_COOKIE['uniCookieUserID'], $user_id2);
+                break;
+        }
+
+        header("Location: " . $_SERVER['HTTP_REFERER']);
+        exit;
+    }
+}

@@ -8,6 +8,7 @@ use Profiles\Profile;
 use Authentifications\Authentification;
 use Posts\Post;
 use Reactions\Reaction;
+use Friends\Friend;
 // src
 require_once '../src/Helpers.php';
 use Helpers\Helpers;
@@ -227,12 +228,14 @@ class DeleteUserController {
     private Authentification $_modelAuth;
     private Post $_modelPost;
     private Reaction $_modelReaction;
+    private Friend $_modelFriend;
 
     public function __construct($page, $method){
         require_once '../Models/Users.php';
         require_once '../Models/Profiles.php';
         require_once '../Models/Posts.php';
         require_once '../Models/reactions.php';
+        require_once '../Models/Friends.php';
 
         $this->_page = $page;
         $this->_method = $method;
@@ -242,7 +245,9 @@ class DeleteUserController {
         $this->_modelAuth = new Authentification();
         $this->_modelPost = new Post();
         $this->_modelReaction = new Reaction();
+        $this->_modelFriend = new Friend();
 
+        $this->_modelFriend->deleteAllRelation($_COOKIE['uniCookieUserID']);
         $this->_modelReaction->deleteAllReactions($_COOKIE['uniCookieUserID']);
         $this->_modelPost->deleteAllPosts($_COOKIE['uniCookieUserID']);
         $this->_modelProfile->deleteProfile($_COOKIE['uniCookieUserID']);

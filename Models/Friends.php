@@ -14,6 +14,17 @@ class Friend {
         $this->_db = new Database;
     }
 
+    public function areFriend($user_id1, $user_id2){
+        $stmt = $this->_db->_pdo->prepare("SELECT user_relation FROM friends WHERE (user_id1 = :user1 AND user_id2 = :user2) OR (user_id1 = :user2 AND user_id2 = :user1)");
+        $stmt->execute([
+            ":user1"=>$user_id1,
+            ":user2"=>$user_id2
+        ]);
+
+        $check = $stmt->fetch(PDO::FETCH_ASSOC);
+        return ($check) ? $check["user_relation"] : false;
+        }
+
     public function get_friend_by_relation($user_id1, $user_relation) {
         $stmt = $this->_db->_pdo->prepare("SELECT u.user_username, u.user_firstname, u.user_lastname, u.user_id, f.user_relation
         FROM friends f
@@ -27,20 +38,15 @@ class Friend {
         return $friends = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function get_blocked($user_id1) {
-        $stmt = $this->_db->_pdo->prepare("SELECT *
-        FROM users
-        WHERE user_id IN (
-            SELECT user_id2
-            FROM friends
-            WHERE user_id1 = :user_id
-            AND user_relation = 'blocked'
-        );
-        ");
+    public function get_blocked($user_id) {
+        $stmt = $this->_db->_pdo->prepare("SELECT * FROM users WHERE user_id IN (SELECT user_id2 FROM friends WHERE user_id1 = :user_id AND user_relation = 'blocked')");
         $stmt->execute([
-            ":user_id"=>$user_id1
+            ":user_id"=>$user_id
         ]);
-        return $blocked = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $blocked = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $blocked;
     }
 
     public function get_friend_request($user_id1) {
@@ -112,26 +118,44 @@ class Friend {
         ]);
     }
 
-    public function block_friend($user_id1, $blocked_user_id) {
-        $stmt = $this->_db->_pdo->prepare("UPDATE friends
-        SET user_relation = 'blocked'
-        WHERE (user_id1 = :user_id AND user_id2 = :blocked_user_id)
-           OR (user_id1 = :blocked_user_id AND user_id2 = :user_id)
-           AND user_relation = 'friend' OR user_relation = 'waiting';
-        ");
+    public function block_friend($user_id1, $user_id2) {
+        $stmt = $this->_db->_pdo->prepare("DELETE FROM friends WHERE (user_id1 = :user_id1 AND user_id2 = :user_id2) OR (user_id1 = :user_id2 AND user_id2 = :user_id1)");
         $stmt->execute([
-            ":user_id"=>$user_id1,
-            ":blocked_user_id"=>$blocked_user_id
+            ":user_id1"=>$user_id1,
+            ":user_id2"=>$user_id2
         ]);
-    }    
 
-    public function unblock_friend($user_id1, $blocked_user_id) {
-        $stmt = $this->_db->_pdo->prepare("DELETE FROM friends
-        WHERE (user_id1 = :user_id AND user_id2 = :blocked_user_id AND user_relation = 'blocked');
-        ");
+        $stmt = $this->_db->_pdo->prepare("INSERT INTO friends (user_id1, user_id2, user_relation) VALUES (:user_id1, :user_id2, :user_relation)");
         $stmt->execute([
-            ":user_id"=>$user_id1,
-            ":blocked_user_id"=>$blocked_user_id
+            ":user_id1"=>$user_id1,
+            ":user_id2"=>$user_id2,
+            ":user_relation"=>"blocked"
+        ]);
+    }
+
+    public function unblock_friend($user_id1, $user_id2) {
+        $stmt = $this->_db->_pdo->prepare("DELETE FROM friends WHERE user_id1 = :user_id1 AND user_id2 = :user_id2");
+        $stmt->execute([
+            ":user_id1"=>$user_id1,
+            ":user_id2"=>$user_id2
+        ]);
+    }
+
+    public function checkRelation($user_id1, $user_id2, $relation) {
+        $stmt = $this->_db->_pdo->prepare("SELECT user_relation FROM friends WHERE user_id1 = :user_id1 AND user_id2 = :user_id2 AND user_relation = :relation");
+        $stmt->execute([
+            ":user_id1"=>$user_id1,
+            ":user_id2"=>$user_id2,
+            ":relation"=>$relation
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteAllRelation($user_id) {
+        $stmt = $this->_db->_pdo->prepare("DELETE FROM friends WHERE (user_id1 = :user_id) OR (user_id2 = :user_id)");
+        $stmt->execute([
+            ":user_id"=>$user_id
         ]);
     }
 }
