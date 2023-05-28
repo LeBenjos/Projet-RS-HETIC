@@ -264,60 +264,6 @@ input[type="file"] {
     cursor: pointer;
 
 
-
-
-}
-
-/* 
-.fillAnimation {
-    overflow: hidden;
-}
-
-.fillAnimation.active {
-    animation: fillAnimation 5s ease;
-}
-
-@keyframes fillAnimation {
-    from {
-        height: 0;
-    }
-
-    to {
-        height: 100%;
-    }
-} */
-#fillAnimation {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100vh;
-    background-color: #ff0000;
-
-    overflow: hidden;
-}
-
-#fillAnimation.active {
-    animation: fillAnimation 5s ease;
-}
-
-.profxile {
-    opacity: 0;
-    transition: opacity 1s ease;
-}
-
-.profile.show {
-    opacity: 1;
-}
-
-@keyframes fillAnimation {
-    from {
-        width: 0;
-    }
-
-    to {
-        width: 100vw;
-    }
 }
 
 @media (max-width: 720px) {

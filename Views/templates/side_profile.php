@@ -3,7 +3,7 @@
 </head>
 
 
-<aside class="fillAnimation">
+<aside class="overlay aside">
     <div class="profile">
         <img class="pp" src="../Views/assets/imgs/users/picture/default_picture.jpg" alt="User profil pic">
         <span>@
