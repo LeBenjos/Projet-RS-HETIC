@@ -8,15 +8,15 @@ function sendMail($user_id, $user_firstname, $user_lastname, $user_mail){
     require_once '../vendor/autoload.php';
 
     $email = new PHPMailer(true);
-    $email->SMTPDebug = 0;
-    $email->isSMTP();
-    $email->Host = 'mail.gandi.net';
-    $email->SMTPAuth = true;
-    $email->Username = 'unilink@heitzjulien.com';
-    $email->Password = '29i8v9JjvsTCunilink-gQwoLX';
+    // $email->SMTPDebug = 0;
+    // $email->isSMTP();
+    $email->Host = 'localhost';
+    // $email->SMTPAuth = true;
+    $email->Username = '';
+    $email->Password = '';
     $email->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $email->Port = 587;
-    $email->setFrom('unilink@heitzjulien.com', 'Unilink');
+    $email->Port = 1025;
+    $email->setFrom('no-replay@unilink.com', 'Unilink');
     $email->addAddress($user_mail, $user_firstname . ' ' . $user_lastname);
     $email->CharSet = 'UTF-8';
 
